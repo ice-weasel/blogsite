@@ -1,0 +1,11 @@
+export default function Home() {
+  const toggleDropdown = () => {
+    console.log("Dropdown button clicked"); // Log when the button is clicked
+
+    const dropdown = document.getElementById("dropdownRadioBgHover");
+
+    if (dropdown) {
+      dropdown.classList.toggle("hidden"); // Toggle the "hidden" class to show/hide the dropdown
+      console.log("Dropdown visibility toggled"); // Log when visibility is toggled
+    }
+  }
