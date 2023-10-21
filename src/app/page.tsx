@@ -30,7 +30,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col mt-2 h-screen ml-4 mr-4 rounded-t-lg bg-slate-700">
         <SingleEvent />
-      </div>
+      </div>  
     </main>
   );
 }

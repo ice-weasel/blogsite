@@ -26,7 +26,7 @@ export default function StatusButton() {
     return () => {
       document.removeEventListener("click", handleDocumentClick);
     };
-  }, []);
+  }, [handleDocumentClick]);
 
   return (
     <div style={{ position: "relative" }}>
