@@ -17,7 +17,7 @@ const carouselImg: CarouselImage[] = [
   },
 ];
 
-export default function Carousel() {
+const Carousel: React.FC<CarouselImage> = ({ imageSrc }) => {
   const [activeIndex, setActiveIndex] = useState<number>(2); // Set the active index to 2 or any other starting index
 
   const prevImage = () => {
@@ -58,11 +58,11 @@ export default function Carousel() {
             <Image
               src={item.imageSrc}
               layout="fill"
-              objectFit="cover"
+              objectPosition="center center" // You can adjust objectPosition as needed
               alt={`Carousel Image ${index}`}
               onLoad={() => handleImageLoad(index)}
               onError={() => handleImageError(index)}
-              sizes="(max-width: 640px) 100vw, 50vw"
+              sizes="(max-width: 100px) 100vw, 50vw"
             />
           </div>
         ))}
@@ -120,4 +120,5 @@ export default function Carousel() {
       </button>
     </div>
   );
-}
+};
+export default Carousel;

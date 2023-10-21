@@ -8,7 +8,7 @@ interface AccordionItem {
   imageSrc: string;
 }
 
-const Carousel = dynamic(() => import("./Carousel"), {
+const CarouselImage = dynamic(() => import("./Carousel"), {
   loading: () => <p>Loading...</p>,
 });
 
@@ -16,22 +16,22 @@ const Carousel = dynamic(() => import("./Carousel"), {
 //Add new Data Here
 const accordionData: AccordionItem[] = [
   {
-    heading: "What is Flowbite?",
+    heading: "TechEvent 1",
     content:
-      "Flowbite is an open-source library of interactive components built on top of Tailwind CSS including buttons, dropdowns, modals, navbars, and more.",
-    imageSrc: "url_to_image_1",
+      "This is a tech event-1",
+    imageSrc: "/img1.jpg",
   },
   {
-    heading: "Is there a Figma file available?",
+    heading: "TechEvent 2",
     content:
-      "Flowbite is first conceptualized and designed using the Figma software, so everything you see in the library has a design equivalent in our Figma file.",
-      imageSrc: "",
+      "This is a tech event-2",
+      imageSrc: "/img2.jpg",
     },
   {
-    heading: "What are the differences between Flowbite and Tailwind UI?",
+    heading: "TechEvent 3",
     content:
-      "The main difference is that the core components from Flowbite are open source under the MIT license, whereas Tailwind UI is a paid product. Another difference is that Flowbite relies on smaller and standalone components, whereas Tailwind UI offers sections of pages.",
-    imageSrc: "",
+      "This is a tech event-3",
+    imageSrc: "/img3.jpg",
     },
 ];
 
@@ -94,7 +94,7 @@ export default function SingleEvent() {
                 {item.content}
               </p>
               <div>
-                <Carousel/>
+              <CarouselImage imageSrc={item.imageSrc} />
               </div>
             </div>
           </div>

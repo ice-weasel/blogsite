@@ -34,7 +34,7 @@ export default function StatusButton() {
         ref={buttonRef}
         id="dropdownRadioBgHoverButton"
         onClick={toggleDropdown}
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover-bg-blue-700 dark:focus:ring-blue-800"
+        className="text-white bg-slate-500 hover:bg-white hover:text-black focus:ring-4 focus:outline-none focus:ring-slate-500 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-black dark:hover-bg-500 dark:focus:ring-slate-500"
       >
         Status{" "}
         <svg

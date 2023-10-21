@@ -22,13 +22,13 @@ export default function Home() {
   };
 
   return (
-    <main className="bg-slate-300">
+    <main className="bg-white">
       <Navbar />
-      <div className="flex flex-col ml-5 mr-5 justify-center items-center h-32 md:flex-row bg-slate-700 rounded-t-lg justify-start  items-start justify-evenly mt-2 max-w-screen">
+      <div className="flex flex-col drop-shadow-lg ml-5 mr-5 justify-center items-center h-32 md:flex-row bg-slate-200 rounded-t-lg justify-start  items-start justify-evenly mt-2 max-w-screen">
         <EventType />
         <StatusButton />
       </div>
-      <div className="flex flex-col mt-2 h-screen ml-4 mr-4 rounded-t-lg bg-slate-700">
+      <div className="flex flex-col mt-2 h-screen ml-4 mr-4 rounded-t-lg  bg-slate-100">
         <SingleEvent />
       </div>  
     </main>
