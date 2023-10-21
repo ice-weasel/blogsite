@@ -54,6 +54,7 @@ export default function Carousel() {
               alt={`Carousel Image ${index}`}
               onLoad={() => handleImageLoad(index)}
               onError={() => handleImageError(index)}
+              sizes="(max-width: 640px) 100vw, 50vw"
             />
           </div>
         ))}
