@@ -29,7 +29,7 @@ export default function StatusButton() {
   }, [handleDocumentClick]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", zIndex: 10 }}>
       <button
         ref={buttonRef}
         id="dropdownRadioBgHoverButton"
@@ -57,15 +57,16 @@ export default function StatusButton() {
       {dropdownVisible && (
         <div
           id="dropdownRadioBgHover"
-          className="z-10 w-64 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-          style={{ position: "absolute", top: "100%", right: 0 }}
+          className="z-20 w-64 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+          style={{ position: "absolute", top: "100%", right: 0, zIndex: 20 }}
         >
           <ul
             className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200"
             aria-labelledby="dropdownRadioBgHoverButton"
+            style={{ overflowY: "hidden", whiteSpace: "nowrap" }}
           >
             <li>
-              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover-bg-gray-600">
                 <input
                   id="default-radio-4"
                   type="radio"
@@ -77,12 +78,12 @@ export default function StatusButton() {
                   htmlFor="default-radio-4"
                   className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
                 >
-                Ongoing Events
+                  Ongoing Events
                 </label>
               </div>
             </li>
             <li>
-              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover-bg-gray-600">
                 <input
                   checked
                   id="default-radio-5"
@@ -100,7 +101,7 @@ export default function StatusButton() {
               </div>
             </li>
             <li>
-              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover-bg-gray-600">
                 <input
                   id="default-radio-6"
                   type="radio"
@@ -112,7 +113,7 @@ export default function StatusButton() {
                   htmlFor="default-radio-6"
                   className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
                 >
-                Completed Events
+                  Completed Events
                 </label>
               </div>
             </li>
@@ -122,3 +123,4 @@ export default function StatusButton() {
     </div>
   );
 }
+
