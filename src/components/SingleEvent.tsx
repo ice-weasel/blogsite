@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import EventButton from "./Eventbutton"; // Import the EventButton component
+import Router from "next/router";
+import Link from "next/link";
 import {
   Card,
   CardHeader,
@@ -46,6 +48,12 @@ const cardData: CardData[] = [
     ImgSrc: "/img2.jpg",
     tags: "Talk-Shows",
   },
+  {
+    heading: "TechEvent 6",
+    desc: "This is a tech event-6",
+    ImgSrc: "/img1.jpg",
+    tags: "Hackathon",
+  },
 ];
 
 const SingleEvent: React.FC = () => {
@@ -57,7 +65,7 @@ const SingleEvent: React.FC = () => {
     : cardData;
 
   return (
-    <div className="grid grid-cols-2 gap-4 ml-5">
+    <div className="grid grid-cols-3 gap-3 ml-5">
      
       {filteredCards.map((event, index) => (
         <EventCard key={index} data={event} />
@@ -72,25 +80,27 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({ data }) => {
   return (
-    <Card className="mt-6 p-7 rounded-lg shadow-lg hover:shadow-xl">
+    <Card className="mt-6 p-3 rounded-lg ">
       <img
         src={data.ImgSrc}
         alt={data.heading}
-        style={{ width: "900px", height: "550px" }}
+        style={{ width: "900px", height: "400px" }}
       />
       <CardHeader className="relative">
         <Typography
           variant="h5"
           color="blue-gray"
-          className="flex p-2 mt-5 mb-2"
+          className="flex p-3 mt-1 mb-2"
         >
           {data.heading}
         </Typography>
       </CardHeader>
       <CardBody className="flex flex-col items-start">
-        <hr className="h-0.5 my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+        <hr className="h-0.5 my-1  bg-gray-200 border-0 dark:bg-gray-700"></hr>
         <p>{data.desc}</p>
+        <Link  href="/continue">
         <Button className="text-black">Read More</Button>
+        </Link>
       </CardBody>
     </Card>
   );

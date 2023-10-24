@@ -18,7 +18,7 @@ const carouselImg: CarouselImage[] = [
 ];
 
 const Carousel: React.FC<CarouselImage> = ({ imageSrc }) => {
-  const [activeIndex, setActiveIndex] = useState<number>(2); // Set the active index to 2 or any other starting index
+  const [activeIndex, setActiveIndex] = useState<number>(2);
 
   const prevImage = () => {
     setActiveIndex((prevIndex) =>
@@ -41,11 +41,7 @@ const Carousel: React.FC<CarouselImage> = ({ imageSrc }) => {
   };
 
   return (
-    <div
-      id="animation-carousel"
-      className="relative w-full"
-      data-carousel="static"
-    >
+    <div id="animation-carousel" className="relative w-full" data-carousel="static">
       <div className="relative h-56 overflow-hidden rounded-lg md:h-96">
         {carouselImg.map((item, index) => (
           <div
@@ -58,11 +54,10 @@ const Carousel: React.FC<CarouselImage> = ({ imageSrc }) => {
             <Image
               src={item.imageSrc}
               layout="fill"
-              objectPosition="center center" // You can adjust objectPosition as needed
+              objectFit="cover" // Ensure images cover the container
               alt={`Carousel Image ${index}`}
               onLoad={() => handleImageLoad(index)}
               onError={() => handleImageError(index)}
-              sizes="(max-width: 100px) 100vw, 50vw"
             />
           </div>
         ))}
