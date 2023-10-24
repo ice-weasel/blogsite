@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import EventButton from "./Eventbutton"; // Import the EventButton component
 import {
   Card,
   CardHeader,
@@ -11,6 +12,7 @@ interface CardData {
   heading: string;
   desc: string;
   ImgSrc: string;
+  tags: string;
 }
 
 const cardData: CardData[] = [
@@ -18,42 +20,57 @@ const cardData: CardData[] = [
     heading: "TechEvent 1",
     desc: "This is a tech event-1",
     ImgSrc: "/img1.jpg",
+    tags: "Hackathons",
   },
   {
     heading: "TechEvent 2",
     desc: "This is a tech event-2",
     ImgSrc: "/img2.jpg",
+    tags: "Talk-Shows",
   },
   {
     heading: "TechEvent 3",
     desc: "This is a tech event-3",
     ImgSrc: "/img3.jpg",
+    tags: "Hackathons",
   },
   {
     heading: "TechEvent 4",
     desc: "This is a tech event-4",
     ImgSrc: "/img3.jpg",
+    tags: "Talk-Shows",
   },
   {
     heading: "TechEvent 5",
     desc: "This is a tech event-5",
     ImgSrc: "/img2.jpg",
+    tags: "Talk-Shows",
   },
-  
 ];
 
-export default function SingleEvent() {
+const SingleEvent: React.FC = () => {
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  // Filter the event cards based on the selected tag
+  const filteredCards = selectedTag
+    ? cardData.filter((event) => event.tags === selectedTag)
+    : cardData;
+
   return (
     <div className="grid grid-cols-2 gap-4 ml-5">
-    {cardData.map((event, index) => (
-  <EventCard key={index} data={event} />
-))}
-
+     
+      {filteredCards.map((event, index) => (
+        <EventCard key={index} data={event} />
+      ))}
     </div>
   );
+};
+
+interface EventCardProps {
+  data: CardData;
 }
 
-function EventCard({ data }: { data: CardData }) {
+const EventCard: React.FC<EventCardProps> = ({ data }) => {
   return (
     <Card className="mt-6 p-7 rounded-lg shadow-lg hover:shadow-xl">
       <img
@@ -70,12 +87,13 @@ function EventCard({ data }: { data: CardData }) {
           {data.heading}
         </Typography>
       </CardHeader>
-      <CardBody>
+      <CardBody className="flex flex-col items-start">
         <hr className="h-0.5 my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
         <p>{data.desc}</p>
         <Button className="text-black">Read More</Button>
       </CardBody>
     </Card>
   );
-}
+};
 
+export default SingleEvent;
