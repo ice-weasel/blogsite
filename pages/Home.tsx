@@ -8,7 +8,6 @@ import Navbar from "../src/components/Navbar";
 import SingleEvent from "../src/components/SingleEvent";
 import "tailwindcss/tailwind.css";
 
-
 const inter = Inter({
   subsets: ["latin"],
   weight: "400",
@@ -34,13 +33,15 @@ export default function HomePage() {
     <main className="bg-white font-raleway" style={mainStyle}>
       <Navbar />
       <div className="flex flex-col drop-shadow-lg  h-48 md:flex-col bg-slate-200 rounded-t-lg justify-evenly  mt-2 max-w-screen">
-        <span className="text-3xl self-center  text-black">Recent Events</span>
-        <div className="flex flex-rows p-5 py-5 justify-evenly ">
+        <span className="text-3xl self-center  text-black">
+          These are the Recent Events
+        </span>
+        <div className="flex flex-rows justify-evenly p-5 py-5  ">
           <EventType />
           <StatusButton />
         </div>
       </div>
-      <div className="flex flex-rows justify-center items-center justify-evenly mt-32 ml-4 mr-4 rounded-t-lg bg-slate-100">
+      <div className="flex flex-rows shadow:3xl justify-center items-center  justify-evenly mt-24 ml-4 mr-4 rounded-t-lg bg-slate-100">
         <div
           style={{
             maxHeight: "80vh",
