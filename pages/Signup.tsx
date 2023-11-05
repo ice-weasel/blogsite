@@ -28,7 +28,7 @@ export default function Home() {
       ...prevData,
       [name]: value,
     }));
-    // Update the button's disabled state
+    // Update the button's disa bled state
     updateButtonStatus(); // Call the function to update button status
   };
 

@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import "tailwindcss/tailwind.css";
 import { Raleway } from "next/font/google";
 
-
 interface PageData {
   heading: string;
   body: string;
@@ -53,26 +52,34 @@ const pagedata: PageData[] = [
 ];
 
 export default function Continue() {
-
   const mainStyle: React.CSSProperties = {
-    fontFamily: 'Raleway, sans-serif', // Specify "Raleway" as the font-family
+    fontFamily: "Raleway, sans-serif", // Specify "Raleway" as the font-family
   };
-  
+
   return (
-    <main className="bg-white font-raleway" style={mainStyle} >
+    <main className="bg-white font-raleway" style={mainStyle}>
       <Navbar />
-      <div className="flex flex-col  items-center h-screen shadow-xl hover:xl mt-20 ml-4 mr-4 rounded-t-lg bg-slate-100">
+      <div className="items-center h-screen shadow-xl hover:xl mt-20 ml-4 mr-4 rounded-t-lg bg-slate-100">
         <img
-          className="self-center p-8    w-screen h-96 object-contain  "
+          className="self-center pt-16 h-96  rounded-lg rounded-lg   object-contain  "
           src="/img1.jpg"
           alt="Image description"
         />
 
         <div className="mt-16">
-          
-<p className="mb-3 text-gray-500 dark:text-gray-400">Track work across the enterprise through an open, collaborative platform. Link issues across Jira and ingest data from other software development tools, so your IT support and operations teams have richer contextual information to rapidly respond to requests, incidents, and changes.</p>
-<p className="text-gray-500 dark:text-gray-400">Deliver great service experiences fast - without the complexity of traditional ITSM solutions.Accelerate critical development work, eliminate toil, and deploy changes with ease, with a complete audit trail for every change.</p>
-
+          <p className="mb-3 text-gray-500 dark:text-gray-400">
+            Track work across the enterprise through an open, collaborative
+            platform. Link issues across Jira and ingest data from other
+            software development tools, so your IT support and operations teams
+            have richer contextual information to rapidly respond to requests,
+            incidents, and changes.
+          </p>
+          <p className="text-gray-500 dark:text-gray-400">
+            Deliver great service experiences fast - without the complexity of
+            traditional ITSM solutions.Accelerate critical development work,
+            eliminate toil, and deploy changes with ease, with a complete audit
+            trail for every change.
+          </p>
         </div>
       </div>
     </main>
