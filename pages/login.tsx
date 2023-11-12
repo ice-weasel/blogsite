@@ -38,7 +38,7 @@ export default function Login() {
       const auth = getAuth(app);
       await signInWithEmailAndPassword(auth, email, password);
       setError(null);
-      window.location.href = "/Home";
+      window.location.href = "/createpage";
     } catch (error) {
       if (error instanceof FirebaseError) {
         // The error variable is now of type FirebaseError

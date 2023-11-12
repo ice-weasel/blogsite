@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
 import { Inter, Raleway, Roboto, Roboto_Serif } from "next/font/google";
 import EventType from "../src/components/Eventbutton";
 import StatusButton from "../src/components/Statusbutton";

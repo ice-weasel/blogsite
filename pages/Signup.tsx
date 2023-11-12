@@ -4,9 +4,10 @@ import "tailwindcss/tailwind.css";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+
 
 import app from "@/app/firebase";
+import { getStorage } from "firebase/storage";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ export default function Home() {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -56,10 +57,10 @@ export default function Home() {
       await setDoc(userDocRef, userData);
 
       console.log("User created and data stored in Firestore");
-      window.location.href="/Home"
-      // Redirect to a success page or handle as needed
+      window.location.href="/createpage"
+     
     } catch (error: any) {
-      console.log("Fail"); // Explicitly specify the type for 'error'
+      console.log("Error Creating user:",error.code,error.message); 
     }
   };
 
@@ -116,7 +117,7 @@ export default function Home() {
                 placeholder="Name"
                 name="name" // Add the 'name' attribute
                 value={formData.name}
-                onChange={handleChange}
+                onChange={onChange}
                 className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
               />
 
@@ -131,7 +132,7 @@ export default function Home() {
               placeholder="Age"
               name="age"
               value={formData.age}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all  focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight  transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -143,7 +144,9 @@ export default function Home() {
             <input
               placeholder="Gender"
               name="gender"
+              onChange={onChange}
               value={formData.gender}
+              
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all  focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight  transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -156,7 +159,7 @@ export default function Home() {
               placeholder="Address"
               name="address"
               value={formData.address}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all  focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight  transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -169,7 +172,7 @@ export default function Home() {
               placeholder="Country/Region"
               name="country"
               value={formData.country}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all  focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight  transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -182,7 +185,7 @@ export default function Home() {
               placeholder="Phone Number"
               name="phonenumber"
               value={formData.phonenumber}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all  focus:border-black focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight  transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -193,10 +196,11 @@ export default function Home() {
         
           <div className="relative h-11 w-full min-w-[200px] text-slate-500">
             <input
+              type="email"
               placeholder="Email"
               name="email"
               value={formData.email}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all focus:border-black focus:outline-0 disabled:border-0 disabled-bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -210,7 +214,7 @@ export default function Home() {
               placeholder="Password"
               name="password"
               value={formData.password}
-              onChange={handleChange}
+              onChange={onChange}
               className="peer h-full w-full border-b bg-transparent pt-4 pb-1.5 font-sans text-sm font-normal text-grey outline outline-0 transition-all focus:border-black focus:outline-0 disabled:border-0 disabled-bg-blue-gray-50"
             />
             <label className="after:content[' '] pointer-events-none absolute left-0 -top-2.5 text-xs font-bold flex h-full w-full select-none text-xs font-normal leading-tight transition-all after:absolute after:-bottom-2.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-black after:transition-transform after:duration-300 peer-placeholder-shown:leading-tight peer-placeholder-shown:text-blue-gray-500 peer-focus:text-xs peer-focus:leading-tight peer-focus:text-slate-500 peer-focus:after:scale-x-100 black-focus:after:border-black peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-slate-500">
@@ -221,10 +225,12 @@ export default function Home() {
           <div>
             <button
               type="submit"
+             
               className={`flex w-full justify-center bg-gray-300 px-3 py-1.5 text-xs font-semibold leading-6 text-white shadow-sm hover-bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black ${
                 isButtonDisabled ? "pointer-events-none" : ""
               }`}
               disabled={isButtonDisabled}
+             
             >
               CONFIRM
             </button>
