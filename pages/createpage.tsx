@@ -17,7 +17,7 @@ export default function CreatePage() {
   const [user, loading] = useAuthState(auth);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-
+//updates form values
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -28,6 +28,7 @@ export default function CreatePage() {
     }));
     updateButtonStatus();
   };
+  //only works if fields are filled
   const updateButtonStatus = () => {
     const { title, content } = formData;
     setIsButtonDisabled(!title || !content);
@@ -75,6 +76,7 @@ export default function CreatePage() {
 
   return (
     <main className="min-h-screen flex flex-col">
+    
       <div className="ml-auto">
         {user ? (
           <>
