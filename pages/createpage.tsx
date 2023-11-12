@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { getFirestore, doc, setDoc, collection, CollectionReference, DocumentData } from "firebase/firestore";
+import { getFirestore, collection, doc, getDoc } from "firebase/firestore";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase";
+import { addDoc, updateDoc } from "firebase/firestore";
 import "tailwindcss/tailwind.css";
 
 import app from "@/app/firebase";
@@ -34,32 +35,44 @@ export default function CreatePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (user) {
       try {
         const db = getFirestore(app);
-  
-      
-        const postsCollectionRef = collection(db,'users',user.uid,'posts'); // Subcollection
-  
-        // Use setDoc once for the specific document reference
-        await addDoc(postsCollectionRef, formData, { merge: true });
-  
+
+        const postsCollectionRef = collection(db, "users", user.uid, "posts");
+
+        // Get a reference to the document using doc
+        const docRef = doc(postsCollectionRef, formData.title);
+
+        // Check if the document already exists
+        const docSnapshot = await getDoc(docRef);
+
+        if (docSnapshot.exists()) {
+          // If the document exists, update it (merge)
+          await updateDoc(docRef, formData);
+          console.log("Post updated in Firestore");
+          window.location.href="/continue"
+        } else {
+          // If the document doesn't exist, create it
+          await addDoc(postsCollectionRef, formData);
+          console.log("Post created and saved in Firestore");
+          window.location.href="/continue"
+        }
+
         setFormData({
           title: "",
           content: "",
           imageSrc: "",
         });
-  
-        console.log("Post created and saved in Firestore");
       } catch (error) {
-        console.error("Error creating post:", error);
+        console.error("Error creating/updating post:", error);
       }
     } else {
       console.error("User is not logged in.");
     }
   };
-  
+
   return (
     <main className="min-h-screen flex flex-col">
       <div className="ml-auto">
@@ -192,7 +205,3 @@ export default function CreatePage() {
     </main>
   );
 }
-function addDoc(postsCollectionRef: CollectionReference<DocumentData, DocumentData>, formData: { title: string; content: string; imageSrc: string; }, arg2: { merge: boolean; }) {
-  throw new Error("Function not implemented.");
-}
-
