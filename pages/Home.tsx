@@ -6,6 +6,7 @@ import StatusButton from "../src/components/Statusbutton";
 import Navbar from "../src/components/Navbar";
 import SingleEvent from "../src/components/SingleEvent";
 import "tailwindcss/tailwind.css";
+import EventDetails from "../src/components/SingleEvent";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,7 +50,7 @@ export default function HomePage() {
             overflowX: "hidden",
           }}
         >
-          <SingleEvent />
+          <EventDetails eventId={""} />
         </div>
       </div>
     </main>
