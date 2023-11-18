@@ -1,32 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { getFirestore, collection, doc, getDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase";
-import { addDoc, updateDoc } from "firebase/firestore";
 import "tailwindcss/tailwind.css";
 import { serverTimestamp } from "firebase/firestore";
 
 import app from "@/app/firebase";
+import { useRouter } from "next/router";
 
 interface FormData {
   title: string;
   content: string;
-  imageSrc: string;
+  image: File | null;
 }
 
 export default function CreatePage() {
   const [formData, setFormData] = useState<FormData>({
     title: "",
     content: "",
-    imageSrc: "",
+    image: null,
   });
 
- 
   const [user, loading] = useAuthState(auth);
-
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const router =useRouter();
 
-  // updates form values
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -38,37 +37,56 @@ export default function CreatePage() {
     updateButtonStatus();
   };
 
-  // only works if fields are filled
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      image: file,
+    }));
+    updateButtonStatus();
+  };
   const updateButtonStatus = () => {
     const { title, content } = formData;
-    setIsButtonDisabled(!title || !content);
+    setIsButtonDisabled(!title || !content || !formData.image);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
+
     if (user) {
       try {
         const db = getFirestore(app);
-  
+        const storage = getStorage(app);
+
+        // Upload image to Firebase Storage
+        const imageRef = ref(storage, `images/${formData.image?.name}`);
+        await uploadBytes(imageRef, formData.image!);
+
+        // Get the download URL of the uploaded image
+        const imageUrl = await getDownloadURL(imageRef);
+
+        console.log("Image uploaded:", imageUrl);
+
         const postsCollectionRef = collection(db, "users", user.uid, "posts");
-  
-        // Use addDoc directly, Firestore will automatically generate a unique ID
-        await addDoc(postsCollectionRef, {
+
+        // Save data, including image URL, to Firestore
+        const docRef = await addDoc(postsCollectionRef, {
           title: formData.title,
           content: formData.content,
-          imageSrc: formData.imageSrc,
-          // You can include other fields as needed
+          imageUrl,
+          timestamp: serverTimestamp(),
         });
-  
+
         console.log("Post created and saved in Firestore");
-        window.location.href = "/continue";
-  
+
+        // Use the newly created document ID (postId) and user ID to navigate
+        router.push(`/[postId]?userId=${user.uid}`, `/${docRef.id}?userId=${user.uid}`);
+
         // Clear the form data
         setFormData({
           title: "",
           content: "",
-          imageSrc: "",
+          image: null,
         });
       } catch (error) {
         console.error("Error creating post:", error);
@@ -124,68 +142,47 @@ export default function CreatePage() {
               required
             />
             <label
-              htmlFor="title"
+              htmlFor="image"
               className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-black duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             ></label>
           </div>
 
           <div className=" mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
-            <div className="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
+          <div className="flex items-center justify-between px-3 py-2 border-b dark:border-gray-600">
               <div className="flex flex-wrap items-center divide-gray-200 sm:divide-x dark:divide-gray-600">
                 <div className="flex items-center  space-x-1 sm:pr-4">
-                  <button
-                    type="button"
+                <label
+                   
                     className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
                   >
+                    <input
+                      type="file"
+                      id="image"
+                      name="image"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
                     <svg
                       className="w-4 h-4"
                       aria-hidden="true"
                       xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 12 20"
+                      fill="currentColor"
+                      viewBox="0 0 16 20"
                     >
                       <path
-                        stroke="currentColor"
-                        stroke-linejoin="round"
-                        strokeWidth="2"
-                        d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M14.067 0H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.933-2ZM6.709 13.809a1 1 0 1 1-1.418 1.409l-2-2.013a1 1 0 0 1 0-1.412l2-2a1 1 0 0 1 1.414 1.414L5.412 12.5l1.297 1.309Zm6-.6-2 2.013a1 1 0 1 1-1.418-1.409l1.3-1.307-1.295-1.295a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1-.001 1.408v.004Z"
+                      />
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"
                       />
                     </svg>
-                    <span className="sr-only">Attach file</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 20"
-                    >
-                      <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z" />
-                      <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                    </svg>
-                    <span className="sr-only">Upload image</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      viewBox="0 0 16 20"
-                    >
-                      <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z" />
-                      <path d="M14.067 0H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.933-2ZM6.709 13.809a1 1 0 1 1-1.418 1.409l-2-2.013a1 1 0 0 1 0-1.412l2-2a1 1 0 0 1 1.414 1.414L5.412 12.5l1.297 1.309Zm6-.6-2 2.013a1 1 0 1 1-1.418-1.409l1.3-1.307-1.295-1.295a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1-.001 1.408v.004Z" />
-                    </svg>
-                    <span className="sr-only">Format code</span>
-                  </button>
+                    <span className="text-black sr-only">Upload image</span>
+                  </label>
                 </div>
               </div>
             </div>

@@ -24,7 +24,7 @@ export interface CardData {
   postId: any;
   title: string;
   content: string;
-  imageSrc: string;
+  imageUrl: string | null;
 }
 
 interface EventDetailsProps {
