@@ -4,20 +4,29 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase";
 import { addDoc, updateDoc } from "firebase/firestore";
 import "tailwindcss/tailwind.css";
+import { serverTimestamp } from "firebase/firestore";
 
 import app from "@/app/firebase";
 
+interface FormData {
+  title: string;
+  content: string;
+  imageSrc: string;
+}
+
 export default function CreatePage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     content: "",
     imageSrc: "",
   });
 
+ 
   const [user, loading] = useAuthState(auth);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-//updates form values
+
+  // updates form values
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -28,7 +37,8 @@ export default function CreatePage() {
     }));
     updateButtonStatus();
   };
-  //only works if fields are filled
+
+  // only works if fields are filled
   const updateButtonStatus = () => {
     const { title, content } = formData;
     setIsButtonDisabled(!title || !content);
@@ -36,47 +46,40 @@ export default function CreatePage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (user) {
       try {
         const db = getFirestore(app);
-
+  
         const postsCollectionRef = collection(db, "users", user.uid, "posts");
-
-        // Get a reference to the document using doc
-        const docRef = doc(postsCollectionRef, formData.title);
-
-        // Check if the document already exists
-        const docSnapshot = await getDoc(docRef);
-
-        if (docSnapshot.exists()) {
-          // If the document exists, update it (merge)
-          await updateDoc(docRef, formData);
-          console.log("Post updated in Firestore");
-          window.location.href="/continue"
-        } else {
-          // If the document doesn't exist, create it
-          await addDoc(postsCollectionRef, formData);
-          console.log("Post created and saved in Firestore");
-          window.location.href="/continue"
-        }
-
+  
+        // Use addDoc directly, Firestore will automatically generate a unique ID
+        await addDoc(postsCollectionRef, {
+          title: formData.title,
+          content: formData.content,
+          imageSrc: formData.imageSrc,
+          // You can include other fields as needed
+        });
+  
+        console.log("Post created and saved in Firestore");
+        window.location.href = "/continue";
+  
+        // Clear the form data
         setFormData({
           title: "",
           content: "",
           imageSrc: "",
         });
       } catch (error) {
-        console.error("Error creating/updating post:", error);
+        console.error("Error creating post:", error);
       }
     } else {
       console.error("User is not logged in.");
     }
   };
-
+  
   return (
     <main className="min-h-screen flex flex-col">
-    
       <div className="ml-auto">
         {user ? (
           <>
@@ -89,7 +92,7 @@ export default function CreatePage() {
                 try {
                   await auth.signOut();
                   // Reload the page after logout
-                  window.location.href="/login"
+                  window.location.href = "/login";
                 } catch (error) {
                   console.error("Error logging out", error);
                 }

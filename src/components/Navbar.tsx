@@ -87,7 +87,7 @@ export default function Navbar() {
               </span>
               <span className="absolute bottom-0 left-0 w-full h-full transition-all duration-500 ease-in-out delay-200 -translate-x-full translate-y-full bg-red-600 rounded-2xl group-hover:mb-12 group-hover:translate-x-0"></span>
               <span className="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-white">
-                Login
+                Create
               </span>
             </Link>
           </>

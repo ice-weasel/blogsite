@@ -1,87 +1,79 @@
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import "tailwindcss/tailwind.css";
-import { Raleway } from "next/font/google";
-
-interface PageData {
-  heading: string;
-  body: string;
-}
-
-interface ImageData {
-  imgSrc: string;
-}
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  weight: "400",
-});
+import React, { useState, useEffect } from "react";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getAuth } from "firebase/auth";
+import app from "@/app/firebase";
+import { fetchPostDataFromFirestore } from "@/app/firebase";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), {
   loading: () => <p>Loading...</p>,
 });
 
-const Carousel = dynamic(() => import("@/components/Scr_Carousel"), {
-  loading: () => <p>Loading Carousel...</p>,
-});
+interface CardData {
+  postId: any;
+  title: string;
+  content: string;
+  imageSrc: string;
+}
 
-const imagedata: ImageData[] = [
-  {
-    imgSrc: "/img1.jpg",
-  },
-  {
-    imgSrc: "/img2.jpg",
-  },
-  {
-    imgSrc: "/img3.jpg",
-  },
-];
+interface PostData extends CardData {
+  userId: string;
+}
 
-const pagedata: PageData[] = [
-  {
-    heading: "Your Heading",
-    body: "Your Body Text",
-  },
-  {
-    heading: "Your Heading",
-    body: "Your Body Text",
-  },
-  {
-    heading: "Your Heading",
-    body: "Your Body Text",
-  },
-];
+const Continue: React.FC = () => {
+  const router = useRouter();
+  const { postId } = router.query;
+  const [postData, setPostData] = useState<CardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth(app);
+  const [user, userLoading] = useAuthState(auth);
 
-export default function Continue() {
-  const mainStyle: React.CSSProperties = {
-    fontFamily: "Raleway, sans-serif", // Specify "Raleway" as the font-family
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (postId && user) {
+          setLoading(true);
+          const fetchedPostData = await fetchPostDataFromFirestore(
+            postId as string
+          );
+          if (fetchedPostData) {
+            setPostData(fetchedPostData);
+          } else {
+            throw new Error("Post not found");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching post data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [postId, user]);
+
+  if (loading || userLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!postData) {
+    return <p>Error loading post data.</p>;
+  }
 
   return (
-    <main className="bg-white font-raleway" style={mainStyle}>
+    <main className="bg-white font-raleway">
       <Navbar />
       <div className="items-center h-screen shadow-xl hover:xl mt-20 ml-4 mr-4 rounded-t-lg bg-slate-100">
-        <img
-          className="self-center pt-16 h-96  rounded-lg rounded-lg   object-contain  "
-          src="/img1.jpg"
-          alt="Image description"
-        />
-
         <div className="mt-16">
-          <p className="mb-3 text-gray-500 dark:text-gray-400">
-            Track work across the enterprise through an open, collaborative
-            platform. Link issues across Jira and ingest data from other
-            software development tools, so your IT support and operations teams
-            have richer contextual information to rapidly respond to requests,
-            incidents, and changes.
-          </p>
-          <p className="text-gray-500 dark:text-gray-400">
-            Deliver great service experiences fast - without the complexity of
-            traditional ITSM solutions.Accelerate critical development work,
-            eliminate toil, and deploy changes with ease, with a complete audit
-            trail for every change.
-          </p>
+          <h1 className="text-3xl font-bold">{postData.title}</h1>
+          <p className="text-gray-500 dark:text-gray-400">{postData.content}</p>
         </div>
       </div>
     </main>
   );
-}
+};
+
+export default Continue;
