@@ -1,5 +1,5 @@
 import React from "react";
-import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import app from "@/app/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Auth, getAuth } from "firebase/auth";
@@ -17,6 +17,7 @@ interface EventCardProps {
   data: CardData;
   userId: string; // Pass userId to EventCard
   handleReadMore: () => void;
+  handleLikes: (postId: string, currentLikes: number) => void;
 }
 
 export interface CardData {
@@ -25,11 +26,14 @@ export interface CardData {
   title: string;
   content: string;
   imageUrl: string | null;
+  likes : number;
 }
 
 interface EventDetailsProps {
   eventId: string;
 }
+
+
 
 const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
   const [eventDetails, setEventDetails] = React.useState<CardData[]>([]);
@@ -58,6 +62,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
 
       return [];
     });
+    
 
     const allPosts = await Promise.all(postsPromises);
     const flattenedPosts = allPosts.flat();
@@ -76,6 +81,29 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
     fetchEventDetails();
   }, [eventId, user]);
 
+
+
+  const handleLikes = async (postId: string, currentLikes: number) => {
+    const db = getFirestore(app);
+  
+    // Iterate over each event in eventDetails
+    for (const event of eventDetails) {
+      const user = event.userId;
+  
+      // Construct the post reference
+      const postRef = doc(db, "users", user, "posts", postId);
+  
+      try {
+        // Update the like count for each post
+        await updateDoc(postRef, { likes: currentLikes + 1 });
+        console.log("Like added successfully!");
+      } catch (error) {
+        console.error("Error adding like:", error);
+      }
+    }
+  };
+  
+
   return (
     <div className="grid grid-cols-3 gap-3 ml-5">
       {eventDetails.map((event, index) => (
@@ -86,13 +114,18 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId }) => {
           handleReadMore={() => {
             router.push(`/[postId]?userId=${event.userId}`, `/${event.postId}?userId=${event.userId}`);
           }}
+          handleLikes={handleLikes}
         />
       ))}
     </div>
   );
 };
 
-const EventCard: React.FC<EventCardProps> = ({ data, handleReadMore }) => {
+const EventCard: React.FC<EventCardProps> = ({ data, userId, handleReadMore, handleLikes }) => {
+  const handleLikeClick = () => {
+    handleLikes(data.postId, data.likes);
+  };
+
   return (
     <>
       <Card className="mt-6 p-3 rounded-lg">
@@ -111,6 +144,12 @@ const EventCard: React.FC<EventCardProps> = ({ data, handleReadMore }) => {
           <Button onClick={handleReadMore} className="text-black">
             Read More
           </Button>
+          <Button onClick={handleLikeClick} className="fa-light fa-heart">
+            Like
+          </Button>
+          <Typography className="text-gray-500 mt-2">
+            Likes: {data.likes}
+          </Typography>
         </CardBody>
       </Card>
     </>
@@ -119,3 +158,7 @@ const EventCard: React.FC<EventCardProps> = ({ data, handleReadMore }) => {
 
 
 export default EventDetails;
+function useState(arg0: number): [any, any] {
+  throw new Error("Function not implemented.");
+}
+

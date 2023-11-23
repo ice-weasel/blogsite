@@ -1,0 +1,4 @@
+  <div className="flex flex-rows justify-evenly p-5 py-5  ">
+          <EventType />
+          <StatusButton />
+        </div>

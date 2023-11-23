@@ -4,6 +4,7 @@ import { getFirestore, doc, getDoc } from "firebase/firestore";
 import app from "@/app/firebase";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+
 import "tailwindcss/tailwind.css";
 
 interface CardData {
@@ -85,26 +86,21 @@ const Post: FC = () => {
     <main className="bg-white font-raleway">
       <Navbar />
       <div className="items-center h-screen shadow-xl hover:xl mt-20 ml-4 mr-4 rounded-t-lg bg-slate-100">
-      
+        <div className="flex flex-col mt-16">
+          {/* Use the src and alt props for the Image component */}
+          <Image
+            src={postDetails?.imageUrl || "/next.svg"} // Replace "/next.svg" with your default image or a placeholder
+            alt="Post Image"
+            width={600}
+            height={400}
+            className="max-w-full h-auto"
+          />
 
-<div className="mt-16">
-  {/* Use the src and alt props for the Image component */}
-  <Image
-  src={postDetails?.imageUrl || "/next.svg"} // Replace "/next.svg" with your default image or a placeholder
-  alt="Post Image"
-  width={600}
-  height={400}
-  className="max-w-full h-auto"
-/>
- 
-  <h1 className="text-3xl font-bold">{postDetails?.title}</h1>
-  <p className="text-gray-500 dark:text-gray-400">
-    {postDetails?.content}
-  </p>
-</div>
-
-
-
+          <h1 className="text-3xl font-bold">{postDetails?.title}</h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            {postDetails?.content}
+          </p>
+        </div>
       </div>
     </main>
   );
